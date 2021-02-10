@@ -1,5 +1,6 @@
 import zlib
 import numpy
+import math
 
 amino = ['A', 'C', 'G', 'T']
 
@@ -69,9 +70,31 @@ def encode(data_string):
     return ''.join(dna_string)
 
 
+def make_H_matrix(input_length):
+    t = math.floor(math.log(input_length, 2)) + 1
+    A_arr = [make_G_c_th_column(input_length - t, i) for i in range(1, t + 1)]
+    A_matrix = numpy.array(A_arr).transpose()
+    # print(A_matrix.shape)
+    # print(A_matrix)
+    h_matrix = numpy.insert(A_matrix, A_matrix.shape[0], numpy.identity(t)* (-1), 0)
+    # print(h_matrix)
+    return h_matrix
+
+
 def decode(dna_string):
     c_string = ''.join([str(amino.index(x)) for x in dna_string])
     print(c_string)
+    parity_quad = int(c_string[0])
+    b_string = c_string[1:]
+    h_matrix = make_H_matrix(len(b_string))
+    b_array = numpy.array([int(x) for x in b_string])
+    # print(numpy.matrix(b_array), numpy.array(h_matrix).shape)
+    e_array = numpy.matmul(b_array, h_matrix)
+    # print(e_array)
+    e_vector = [x%4 for x in e_array]
+    e_string = ''.join([str(int(x)%4) for x in e_array])
+    print(e_vector)
+    t = h_matrix.shape[1]
 
 
 if __name__ == '__main__':
@@ -80,7 +103,8 @@ if __name__ == '__main__':
     decode(dna)
     # for i in range(30):
     #     make_G_matrix(i)
-
     # print(make_G_matrix(15))
     # c = (2, 3)
+    # x = numpy.matrix([1,2,3])
+    # print(x, x.shape)
     # print(c.count(0))
