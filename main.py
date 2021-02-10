@@ -41,7 +41,7 @@ def make_G_matrix(input_length):
         t += 1
     g_matrix = numpy.identity(input_length)
     # print(t)
-    for i in range(1, t+1):
+    for i in range(1, t + 1):
         # print(make_G_c_th_column(input_length, i))
         # print(g_matrix.shape[1])
         # print(type(i), i)
@@ -109,7 +109,7 @@ def correct_errors(res_string, error_vector):
         # print(error_location, "2")
         # if error_location == 0 :
         error_location = len(res_string) - len(error_vector) + error_location
-        print(error_location, "1")
+        # print(error_location, "1")
         # print( res_string, error_location)
         # print(res_string, "***********")
         # c_s = res_string[:error_location] + str((int(res_string[error_location]) - value) % 4) + res_string[error_location + 1:]
@@ -195,28 +195,30 @@ def decode(dna_string):
 
 
 if __name__ == '__main__':
-    testing_string = "la_Project"
-    testing_times = 10
-    tests_count = 100
-    errors_count = 50
+    testing_string = "la_Project"  # the string that will be coded and decoded
+    tests_count = 100  # number of copies made from tested_string
+    errors_count = 50  # number of quads that would change in all strings
+    testing_times = 200  # count of times we run the test
     total_fail = 0
+    total_wrong = 0
     correct_dna = encode(testing_string)
-    print(encode(testing_string))
+    # print(encode(testing_string))
     for k in range(testing_times):
         a = []
         for i in range(tests_count):
             a.append([x for x in correct_dna])
         # print(a)
         for j in range(errors_count):
-            x = random.randint(0, len(a)-1)
-            y = random.randint(0, len(a[0])-1)
+            x = random.randint(0, len(a) - 1)
+            y = random.randint(0, len(a[0]) - 1)
             a[x][y] = amino[random.randint(0, 3)]
         for i in range(tests_count):
             string = ''.join(a[i])
-            if string == correct_dna :
+            if string == correct_dna:
                 continue
-            print(string)
+            # print(string)
+            total_wrong += 1
             if decode(string) != testing_string:
-                print("**********")
                 total_fail += 1
-    print(total_fail/testing_times)
+    print(total_wrong / testing_times)  # average error occurrence
+    print(total_fail / testing_times)   # average failure
