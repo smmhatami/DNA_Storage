@@ -101,23 +101,31 @@ def correct_errors(res_string, error_vector):
         return res_string
     # print(error_location, "loc")
     # print(2 ** (math.floor(math.log(error_location, 2))), "check")
+    t = 0
+    # print(error_location, "1")
     if error_location == 2 ** (math.floor(math.log(error_location, 2))):
         # print(error_location, "1")
         error_location = math.floor(math.log(error_location, 2))
         # print(error_location, "2")
         # if error_location == 0 :
         error_location = len(res_string) - len(error_vector) + error_location
+        print(error_location, "1")
         # print( res_string, error_location)
         # print(res_string, "***********")
         # c_s = res_string[:error_location] + str((int(res_string[error_location]) - value) % 4) + res_string[error_location + 1:]
         # print(''.join(amino[int(x)] for x in c_s))
         # return res_string
+
     else:
-        t = 0
+
         while 2 ** t - 1 < error_location:
             t += 1
-        error_location -= t + 1
+        error_location -= (t + 1)
     # print("one error corrected")
+
+    # print(error_location, error_vector, t, "2")
+    if error_location >= len(res_string):
+        return -1
     correct_value = (int(res_string[error_location]) - value) % 4
     # print(value, " val")
     # print(error_location, " loc")
@@ -187,22 +195,17 @@ def decode(dna_string):
 
 
 if __name__ == '__main__':
-    # print(math.floor(math.log(1, 2)))
-    # print("hello"[-2:])
-    # t = 0
-    # while 2 ** t - 1 - t < 27:
-    #     t += 1
-    # print(t)
-    # print(decode(encode("laproe")))
     testing_string = "la_Project"
     testing_times = 10
     tests_count = 100
     errors_count = 50
     total_fail = 0
+    correct_dna = encode(testing_string)
+    print(encode(testing_string))
     for k in range(testing_times):
         a = []
         for i in range(tests_count):
-            a.append([x for x in encode(testing_string)])
+            a.append([x for x in correct_dna])
         # print(a)
         for j in range(errors_count):
             x = random.randint(0, len(a)-1)
@@ -210,6 +213,10 @@ if __name__ == '__main__':
             a[x][y] = amino[random.randint(0, 3)]
         for i in range(tests_count):
             string = ''.join(a[i])
+            if string == correct_dna :
+                continue
+            print(string)
             if decode(string) != testing_string:
+                print("**********")
                 total_fail += 1
     print(total_fail/testing_times)
